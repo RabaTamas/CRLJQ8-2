@@ -1,0 +1,39 @@
+hu:
+  number:
+    format:
+      separator: ","
+      delimiter: " "
+      precision: 2
+    currency:
+      format:
+        format: "%n %u"
+        unit: "Ft"
+        separator: ","
+        delimiter: " "
+        precision: 0
+    percentage:
+      format:
+        delimiter: ""
+    precision:
+      format:
+        delimiter: ""
+    human:
+      format:
+        delimiter: ""
+        precision: 3
+  date:
+    formats:
+      default: "%Y. %m. %d."
+      short: "%m. %d."
+      long: "%Y. %B %d."
+    day_names: [vasárnap, hétfő, kedd, szerda, csütörtök, péntek, szombat]
+    abbr_day_names: [V, H, K, Sze, Cs, P, Szo]
+    month_names: [~, január, február, március, április, május, június, július, augusztus, szeptember, október, november, december]
+    abbr_month_names: [~, jan, feb, már, ápr, máj, jún, júl, aug, sze, okt, nov, dec]
+  time:
+    formats:
+      default: "%Y. %m. %d. %H:%M"
+      short: "%m. %d. %H:%M"
+      long: "%Y. %B %d. %H:%M"
+    am: "de."
+    pm: "du."

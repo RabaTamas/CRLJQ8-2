@@ -1,0 +1,128 @@
+<!-- Főoldal: hero + kiemelt könyvek + keresés/lista -->
+
+<!-- Hero szekció (csak főoldalon, ha nincs keresési paraméter) -->
+<% unless params[:q] || params[:category_id] %>
+<section class="hero">
+  <div class="hero-content">
+    <h1>Üdvözöljük a BookNest-en!</h1>
+    <p>Fedezze fel könyvek ezreit – gyorsan, egyszerűen, kedvező áron.</p>
+    <%= link_to "Böngéssz most!", books_path, class: "btn btn-hero" %>
+  </div>
+</section>
+
+<!-- Kiemelt könyvek -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Kiemelt könyvek</h2>
+    <div class="books-grid">
+      <% @featured_books.each do |book| %>
+        <div class="book-card">
+          <div class="book-cover">
+            <% if book.cover_image.present? %>
+              <%= image_tag book.cover_image, alt: book.title %>
+            <% else %>
+              <div class="book-cover-placeholder">📖</div>
+            <% end %>
+          </div>
+          <div class="book-info">
+            <h3><%= link_to book.title, book_path(book) %></h3>
+            <p class="book-author"><%= book.author %></p>
+            <p class="book-price"><%= book.formatted_price %></p>
+            <div class="book-actions">
+              <%= link_to "Részletek", book_path(book), class: "btn btn-outline" %>
+              <%= button_to "Kosárba", add_item_cart_path(book_id: book.id),
+                    method: :post, class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<!-- Könyvlista szekció -->
+<section class="section section-list">
+  <div class="container">
+    <h2 class="section-title">
+      <%= params[:q].present? ? "Keresési eredmények: \"#{params[:q]}\"" : "Összes könyv" %>
+    </h2>
+
+    <div class="list-layout">
+
+      <!-- Szűrő oldalsáv -->
+      <aside class="sidebar">
+        <%= form_with url: books_path, method: :get, local: true do |f| %>
+          <h3>Szűrők</h3>
+
+          <div class="filter-group">
+            <label>Keresés</label>
+            <%= f.text_field :q, value: params[:q], placeholder: "Cím vagy szerző...", class: "form-input" %>
+          </div>
+
+          <div class="filter-group">
+            <label>Kategória</label>
+            <%= f.select :category_id,
+                  options_from_collection_for_select(@categories, :id, :name, params[:category_id]),
+                  { include_blank: "Összes" }, class: "form-select" %>
+          </div>
+
+          <div class="filter-group">
+            <label>Ár (Ft)</label>
+            <div class="price-range">
+              <%= f.number_field :price_min, value: params[:price_min], placeholder: "Min", class: "form-input" %>
+              <%= f.number_field :price_max, value: params[:price_max], placeholder: "Max", class: "form-input" %>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label>Rendezés</label>
+            <%= f.select :sort,
+                  [["Cím (A–Z)", ""], ["Ár: olcsóbb először", "price_asc"],
+                   ["Ár: drágább először", "price_desc"], ["Újdonságok", "newest"]],
+                  { selected: params[:sort] }, class: "form-select" %>
+          </div>
+
+          <%= f.submit "Szűrés", class: "btn btn-primary btn-full" %>
+        <% end %>
+      </aside>
+
+      <!-- Könyvlista -->
+      <div class="books-list">
+        <% if @books.any? %>
+          <% @books.each do |book| %>
+            <div class="book-list-item">
+              <div class="book-list-cover">
+                <% if book.cover_image.present? %>
+                  <%= image_tag book.cover_image, alt: book.title %>
+                <% else %>
+                  <div class="book-cover-placeholder small">📖</div>
+                <% end %>
+              </div>
+              <div class="book-list-info">
+                <h3><%= link_to book.title, book_path(book) %></h3>
+                <p class="book-author"><%= book.author %></p>
+                <% if book.category %>
+                  <span class="book-badge"><%= book.category.name %></span>
+                <% end %>
+                <p class="book-description-short"><%= truncate(book.description, length: 100) %></p>
+              </div>
+              <div class="book-list-actions">
+                <p class="book-price large"><%= book.formatted_price %></p>
+                <%= link_to "Részletek", book_path(book), class: "btn btn-outline" %>
+                <%= button_to "Kosárba", add_item_cart_path(book_id: book.id),
+                      method: :post, class: "btn btn-primary" %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="empty-state">
+            <p>Nincs találat a megadott feltételekre.</p>
+            <%= link_to "Összes könyv megtekintése", books_path, class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</section>

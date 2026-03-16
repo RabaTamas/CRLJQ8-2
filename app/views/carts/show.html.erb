@@ -1,0 +1,92 @@
+<!-- Kenyérmorzsa -->
+<nav class="breadcrumb">
+  <div class="container">
+    <%= link_to "BookNest", root_path %> &rsaquo;
+    <span>Kosár</span>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <h1>Az Ön kosara
+      <% if @items.any? %>
+        <small>(<%= @items.sum { |i| i[:quantity] } %> tétel)</small>
+      <% end %>
+    </h1>
+
+    <% if @items.empty? %>
+      <div class="empty-state">
+        <p>A kosara üres.</p>
+        <%= link_to "Böngéssz a könyvek között", books_path, class: "btn btn-primary" %>
+      </div>
+
+    <% else %>
+      <div class="cart-layout">
+
+        <!-- Kosár tételek -->
+        <div class="cart-items">
+          <% @items.each do |item| %>
+            <div class="cart-item">
+              <div class="cart-item-cover">
+                <div class="book-cover-placeholder small">📖</div>
+              </div>
+              <div class="cart-item-info">
+                <h3><%= link_to item[:book].title, book_path(item[:book]) %></h3>
+                <p class="book-author"><%= item[:book].author %></p>
+                <p class="book-price"><%= item[:book].formatted_price %></p>
+              </div>
+              <div class="cart-item-actions">
+                <%= button_to "✕ Eltávolít",
+                      remove_item_cart_path(book_id: item[:book].id),
+                      method: :delete,
+                      class: "btn btn-danger btn-sm",
+                      data: { confirm: "Biztosan eltávolítja?" } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Összesítő + megrendelés -->
+        <div class="cart-summary">
+          <h3>Összesítő</h3>
+          <div class="summary-row">
+            <span>Részösszeg</span>
+            <span><%= number_to_currency(@total, unit: "Ft", format: "%n %u", separator: ",", delimiter: " ") %></span>
+          </div>
+          <div class="summary-row">
+            <span>Szállítás</span>
+            <span><%= @shipping %> Ft</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span><strong>Összesen</strong></span>
+            <span><strong><%= number_to_currency(@total + @shipping, unit: "Ft", format: "%n %u", separator: ",", delimiter: " ") %></strong></span>
+          </div>
+
+          <hr>
+
+          <h3>Szállítási adatok</h3>
+          <%= form_with model: Order.new, url: place_order_cart_path, local: true do |f| %>
+            <div class="form-group">
+              <%= f.label :name, "Teljes név" %>
+              <%= f.text_field :name, class: "form-input", placeholder: "Kovács János", required: true %>
+            </div>
+            <div class="form-group">
+              <%= f.label :email, "Email cím" %>
+              <%= f.email_field :email, class: "form-input", placeholder: "pelda@email.hu", required: true %>
+            </div>
+            <div class="form-group">
+              <%= f.label :address, "Szállítási cím" %>
+              <%= f.text_field :address, class: "form-input", placeholder: "1234 Budapest, Példa u. 1.", required: true %>
+            </div>
+            <div class="form-group">
+              <%= f.label :phone, "Telefonszám" %>
+              <%= f.telephone_field :phone, class: "form-input", placeholder: "+36 30 123 4567" %>
+            </div>
+            <%= f.submit "Megrendelés leadása →", class: "btn btn-primary btn-full btn-large" %>
+          <% end %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+</section>

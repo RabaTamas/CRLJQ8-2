@@ -1,0 +1,88 @@
+<!-- Kenyérmorzsa navigáció -->
+<nav class="breadcrumb">
+  <div class="container">
+    <%= link_to "BookNest", root_path %> &rsaquo;
+    <%= link_to "Könyvek", books_path %> &rsaquo;
+    <span><%= @book.title %></span>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="book-detail-layout">
+
+      <!-- Borítókép -->
+      <div class="book-detail-cover">
+        <% if @book.cover_image.present? %>
+          <%= image_tag @book.cover_image, alt: @book.title, class: "cover-img" %>
+        <% else %>
+          <div class="book-cover-placeholder large">📖</div>
+        <% end %>
+      </div>
+
+      <!-- Adatok -->
+      <div class="book-detail-info">
+        <h1><%= @book.title %></h1>
+        <p class="detail-author">Szerző: <strong><%= @book.author %></strong></p>
+
+        <% if @book.category %>
+          <span class="book-badge"><%= @book.category.name %></span>
+        <% end %>
+
+        <table class="detail-table">
+          <% if @book.publisher %>
+            <tr><td>Kiadó</td><td><%= @book.publisher %></td></tr>
+          <% end %>
+          <% if @book.year %>
+            <tr><td>Megjelenés éve</td><td><%= @book.year %></td></tr>
+          <% end %>
+          <% if @book.pages %>
+            <tr><td>Oldalszám</td><td><%= @book.pages %></td></tr>
+          <% end %>
+          <% if @book.isbn %>
+            <tr><td>ISBN</td><td><%= @book.isbn %></td></tr>
+          <% end %>
+        </table>
+
+        <p class="detail-price"><%= @book.formatted_price %></p>
+
+        <div class="detail-actions">
+          <%= button_to "🛒 Kosárba teszem", add_item_cart_path(book_id: @book.id),
+                method: :post, class: "btn btn-primary btn-large" %>
+          <%= link_to "← Vissza a listához", books_path, class: "btn btn-outline" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leírás -->
+    <% if @book.description.present? %>
+      <div class="book-description">
+        <h2>Leírás</h2>
+        <p><%= @book.description %></p>
+      </div>
+    <% end %>
+
+    <!-- Hasonló könyvek -->
+    <% if @related_books.any? %>
+      <div class="related-books">
+        <h2>Hasonló könyvek</h2>
+        <div class="books-grid books-grid-small">
+          <% @related_books.each do |book| %>
+            <div class="book-card">
+              <div class="book-cover">
+                <div class="book-cover-placeholder">📖</div>
+              </div>
+              <div class="book-info">
+                <h3><%= link_to book.title, book_path(book) %></h3>
+                <p class="book-author"><%= book.author %></p>
+                <p class="book-price"><%= book.formatted_price %></p>
+                <%= link_to "Részletek", book_path(book), class: "btn btn-outline btn-sm" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</section>
