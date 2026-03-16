@@ -1,4 +1,5 @@
 /.bundle
+/.claude
 /log/*
 /tmp/*
 !/log/.keep
