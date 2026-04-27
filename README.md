@@ -1,6 +1,6 @@
 # BookNest – Online Könyváruház
 
-**Rails webalkalmazás a BME Webfejlesztés tárgy 2. házi feladatához.**
+**Rails webalkalmazás a BME Webfejlesztés tárgy házi feladataihoz.**
 
 - **Hallgató:** Rába Tamás  
 - **Neptun-kód:** CRLJQ8  
@@ -54,6 +54,7 @@ Az alkalmazás elérhető: [http://localhost:3000](http://localhost:3000)
 | Kosár | `/cart` | Tételek, összesítő, megrendelés |
 | Bejelentkezés | `/login` | Session alapú auth |
 | Regisztráció | `/register` | Új felhasználó |
+| Profil szerkesztés | `/users/:id/edit` | Név, email, jelszó módosítása |
 
 ---
 
@@ -67,6 +68,13 @@ orders         – leadott rendelések
 order_items    – rendelés tételei (könyv + mennyiség + ár)
 ```
 
+### Modellek közötti kapcsolatok
+
+- `User` has_many `Order`
+- `Book` belongs_to `Category`, has_many `OrderItem`
+- `Order` belongs_to `User`, has_many `OrderItem`
+- `OrderItem` belongs_to `Order`, belongs_to `Book`
+
 ---
 
 ## Mappák
@@ -75,12 +83,12 @@ order_items    – rendelés tételei (könyv + mennyiség + ár)
 app/
   controllers/   – BooksController, CartsController, SessionsController, UsersController
   models/        – Book, Category, User, Order, OrderItem
-  views/         – ERB sablonok (books, cart, sessions, users, layouts)
+  views/         – ERB sablonok (books, carts, sessions, users, layouts)
   assets/        – CSS (application.css)
 config/
   routes.rb      – URL útvonalak
   database.yml   – MySQL konfiguráció
 db/
   migrate/       – Adatbázis migrációk
-  seeds.rb       – Alap adatok
+  seeds.rb       – Alap adatok (5 kategória, 6 könyv)
 ```

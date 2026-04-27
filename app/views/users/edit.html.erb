@@ -1,0 +1,53 @@
+<nav class="breadcrumb">
+  <div class="container">
+    <%= link_to "BookNest", root_path %> &rsaquo;
+    <span>Profil szerkesztése</span>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container container-narrow">
+    <div class="auth-card">
+      <h1>Profil szerkesztése</h1>
+
+      <%= form_with model: @user, url: user_path(@user), method: :patch, local: true do |f| %>
+        <% if @user.errors.any? %>
+          <div class="error-box">
+            <ul>
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= f.label :name, "Teljes név" %>
+          <%= f.text_field :name, class: "form-input", required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :email, "Email cím" %>
+          <%= f.email_field :email, class: "form-input", required: true %>
+        </div>
+
+        <fieldset style="border:1px solid #ddd; padding:1rem; border-radius:6px; margin-top:1rem;">
+          <legend style="padding:0 0.5rem; font-weight:600;">Jelszó módosítása</legend>
+          <p style="font-size:0.85rem; color:#666; margin-bottom:0.75rem;">Hagyja üresen, ha nem szeretné megváltoztatni.</p>
+
+          <div class="form-group">
+            <%= f.label :password, "Új jelszó" %>
+            <%= f.password_field :password, class: "form-input", placeholder: "Legalább 6 karakter" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :password_confirmation, "Új jelszó megerősítése" %>
+            <%= f.password_field :password_confirmation, class: "form-input", placeholder: "••••••••" %>
+          </div>
+        </fieldset>
+
+        <%= f.submit "Mentés", class: "btn btn-success btn-full", style: "margin-top:1.5rem;" %>
+      <% end %>
+    </div>
+  </div>
+</section>
